@@ -38,6 +38,7 @@ def build_major_plates(count=8,radius=0.42):
     for i in range(count):
         bpy.ops.mesh.primitive_cube_add(size=random.uniform(0.15,0.28))
         p=bpy.context.object
+        p.name=f'Plate_{i:02d}'
         p.location=Vector((random.uniform(-radius,radius),random.uniform(-radius,radius),random.uniform(-radius,radius)))
         p.rotation_euler=(random.random()*3.14,random.random()*3.14,random.random()*3.14)
         plates.append(p)
@@ -45,11 +46,14 @@ def build_major_plates(count=8,radius=0.42):
 
 
 def boolean_union(core,objects):
+    bpy.context.view_layer.objects.active=core
     for obj in objects:
-        m=core.modifiers.new(f'Union_{obj.name}','BOOLEAN')
-        m.operation='UNION'
-        m.solver='EXACT'
-        m.object=obj
+        mod=core.modifiers.new(name=f'Union_{obj.name}',type='BOOLEAN')
+        mod.operation='UNION'
+        mod.solver='EXACT'
+        mod.object=obj
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.objects.remove(obj,do_unlink=True)
 
 
 def prepare_core(radius=0.4):
