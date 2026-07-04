@@ -56,6 +56,9 @@ class PlateBuilder:
             depth
         )
 
+        self._prepare_faces(bm)
+        self._finalize_mesh(bm)
+                
         bm.normal_update()
 
         bm.to_mesh(mesh)
